@@ -1,0 +1,82 @@
+using Gtk 4.0;
+
+ApplicationWindow main_window {
+    title: _("GStreamer Video Player");
+    default-width: 980;
+    default-height: 550;
+
+    Box main_box {
+        orientation: vertical;
+
+        Box main_hbox {
+            vexpand: true;
+
+            $VideoRenderer video_container {
+                hexpand: true;
+                accessibility {
+                    label: _("Video frame");
+                }
+            }
+
+            ScrolledWindow {
+                hexpand: false;
+                vexpand: true;
+                width-request: 200;
+                has-frame: true;
+
+                child: TextView streams_list {
+                    editable: false;
+                    margin-start: 2;
+                    margin-end: 2;
+                    wrap-mode: word;
+                };
+            }
+        }
+
+        Box controls {
+            orientation: horizontal;
+            margin-top: 2;
+            margin-bottom: 2;
+
+            Button play_button {
+                icon-name: "media-playback-start";
+                margin-start: 2;
+                margin-end: 2;
+                accessibility {
+                    label: _("Play");
+                }
+            }
+
+            Button pause_button {
+                icon-name: "media-playback-pause";
+                margin-start: 2;
+                margin-end: 2;
+                accessibility {
+                    label: _("Pause");
+                }
+            }
+
+            Button stop_button {
+                icon-name: "media-playback-stop";
+                margin-start: 2;
+                margin-end: 2;
+                accessibility {
+                    label: _("Stop");
+                }
+            }
+
+            Scale slider {
+                hexpand: true;
+                orientation: horizontal;
+                adjustment: Adjustment {
+                    lower: 0;
+                    upper: 100;
+                    step-increment: 1;
+                };
+                draw-value: false;
+                margin-start: 2;
+                margin-end: 2;
+            }
+        }
+    }
+}

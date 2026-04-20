@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/">
+        <file compressed="true">video-vs.glsl</file>
+        <file compressed="true">video-fs.glsl</file>
+        <file compressed="true" preprocess="xml-stripblanks">gst-05-win.ui</file>
+    </gresource>
+</gresources>

@@ -1,0 +1,4 @@
+option('gtk4',
+       type : 'boolean',
+       value : true,
+       description : 'build the 5th tutorial\'s GTK 4 video player')

@@ -1,5 +1,6 @@
+<img width="983" height="580" alt="player screenshot" src="https://github.com/user-attachments/assets/bb10e502-d5aa-44bd-a1c7-1e8ab9a3e6cb" />
+
 # GStreamer C++ Tutorials
-<img width="983" height="580" alt="изображение" src="https://github.com/user-attachments/assets/bb10e502-d5aa-44bd-a1c7-1e8ab9a3e6cb" />
 
 This project helps use GStreamer with modern C++. It is a translation of the
 [GStreamer Tutorials](https://gstreamer.freedesktop.org/documentation/tutorials/basic/index.html?gi-language=c)

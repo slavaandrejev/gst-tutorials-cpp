@@ -11,6 +11,7 @@ Special attention was given to Tutorial 5. The original is aimed at the outdated
 GTK+ and is not an idiomatic example of modern GTK usage. This project uses
 GTK 4 and demonstrates contemporary, idiomatic use of the framework. It includes:
   * Declarative GUI construction using the [Blueprint](https://gnome.pages.gitlab.gnome.org/blueprint-compiler/) language.
+  * Subclassing GTK widgets in C++ and declaring them directly in Blueprint.
   * GLib resources for storing the GUI description and OpenGL shaders.
   * OpenGL context sharing between GTK and GStreamer.
   * Video rendering to a GtkGLArea widget.

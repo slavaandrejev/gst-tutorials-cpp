@@ -332,6 +332,8 @@ Gst::FlowReturn MainWindow::new_sample(Gst::AppSink) {
     return Gst::FlowReturn::OK_;
 }
 
+// When the decoding thread receives a new frame, it writes it to the writing
+// slot and atomically swaps the shared and writing slots.
 void MainWindow::store_new_frame(Gst::Buffer_Ref buffer) {
     if (mapped[write_slot]) {
         gst_video_frame_unmap(&frames[write_slot]);
@@ -344,6 +346,9 @@ void MainWindow::store_new_frame(Gst::Buffer_Ref buffer) {
     new_frame.store(true, std::memory_order_release);
 }
 
+// When OpenGL requests a frame, it reads it from the reading slot if there are
+// no new frames. If there were a new frame, it swaps the reading slot to the
+// new frame and then reads.
 gint MainWindow::on_get_texture(GLib::Object) {
     if (new_frame.exchange(false, std::memory_order_acquire)) {
         read_slot = shared.exchange(read_slot);

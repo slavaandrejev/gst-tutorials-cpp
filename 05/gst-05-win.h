@@ -52,6 +52,9 @@ private:
 
     Gst::VideoInfo render_video_info;
 
+    // Variables for lock-free frame synchronization between decoding and
+    // displaying. We have one slot for writing and one for reading. The third
+    // slot is a previous frame.
     GstVideoFrame     frames[3]{GST_VIDEO_FRAME_INIT};
     bool              mapped[3]{};
     std::atomic<int>  shared{2};

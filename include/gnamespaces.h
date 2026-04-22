@@ -2,6 +2,7 @@
 
 #include <gio/gio.hpp>
 #include <glib/glib.hpp>
+#include <glibunix/glibunix.hpp>
 #include <gobject/gobject.hpp>
 #include <gstapp/gstapp.hpp>
 #include <gstaudio/gstaudio.hpp>
@@ -12,6 +13,7 @@
 
 namespace GLib {
     using namespace gi::repository::GLib;
+    using namespace gi::repository::GLibUnix;
     using namespace gi::repository::GObject;
 }
 namespace Gio {

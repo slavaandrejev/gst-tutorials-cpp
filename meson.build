@@ -35,3 +35,4 @@ if get_option('gtk4')
 endif
 subdir('06')
 subdir('07')
+subdir('08')

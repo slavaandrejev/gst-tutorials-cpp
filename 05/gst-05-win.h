@@ -91,11 +91,6 @@ private:
             Gst::ElementFactory::make("glcolorconvert", "glcolorconvert")
         )
     };
-    Gst::BaseTransform capsfilter{
-        gi::object_cast<Gst::BaseTransform>(
-            Gst::ElementFactory::make("capsfilter", "capsfilter")
-        )
-    };
     Gst::AppSink video_sink{
         gi::object_cast<Gst::AppSink>(
             Gst::ElementFactory::make("appsink", "appsink")

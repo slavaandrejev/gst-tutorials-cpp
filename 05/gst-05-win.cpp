@@ -78,16 +78,15 @@ void MainWindow::on_realize(Gtk::Widget) {
     g_return_if_fail(playbin);
     g_return_if_fail(glupload);
     g_return_if_fail(glcolorconvert);
-    g_return_if_fail(capsfilter);
     g_return_if_fail(video_sink);
     g_return_if_fail(video_sink_bin);
 
-    video_sink_bin.add(capsfilter, glupload, glcolorconvert, video_sink);
+    video_sink_bin.add(glupload, glcolorconvert, video_sink);
 
-    if (!glupload.link(glcolorconvert, capsfilter, video_sink)) {
+    if (!glupload.link(glcolorconvert, video_sink)) {
         throw std::runtime_error("Elements couldn't be linked");
     }
-    capsfilter.set_property("caps", Gst::Caps::from_string("video/x-raw(memory:GLMemory),format=RGBA"));
+    video_sink.set_caps(Gst::Caps::from_string("video/x-raw(memory:GLMemory),format=RGBA"));
     auto sink_pad = Gst::GhostPad::new_("sink", glupload.get_static_pad("sink"));
     video_sink_bin.add_pad(sink_pad);
     playbin.set_property("video-sink", video_sink_bin);

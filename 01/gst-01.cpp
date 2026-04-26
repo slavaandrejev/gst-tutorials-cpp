@@ -10,7 +10,6 @@ int main(int argc, char *argv[]) {
     auto pipeline = Gst::parse_launch("playbin uri=https://gstreamer.freedesktop.org/data/media/sintel_trailer-480p.webm");
     pipeline.set_state(Gst::State::PLAYING_);
 
-
     auto bus = pipeline.get_bus();
     auto msg = bus.timed_pop_filtered(
         Gst::CLOCK_TIME_NONE_

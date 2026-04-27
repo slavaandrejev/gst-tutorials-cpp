@@ -9,6 +9,7 @@
 #include <gstgl/gstgl.hpp>
 #include <gstglegl/gstglegl.hpp>
 #include <gstglx11/gstglx11.hpp>
+#include <gstpbutils/gstpbutils.hpp>
 #include <gstvideo/gstvideo.hpp>
 
 namespace GLib {
@@ -27,5 +28,6 @@ namespace Gst {
     using namespace gi::repository::GstGL;
     using namespace gi::repository::GstGLEGL;
     using namespace gi::repository::GstGLX11;
+    using namespace gi::repository::GstPbutils;
     using namespace gi::repository::GstVideo;
 }

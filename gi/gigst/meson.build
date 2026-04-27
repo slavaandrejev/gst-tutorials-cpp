@@ -5,6 +5,7 @@ gst_base_dep    = dependency('gstreamer-base-1.0')
 gst_gl_dep      = dependency('gstreamer-gl-1.0')
 gst_gl_egl_dep  = dependency('gstreamer-gl-egl-1.0')
 gst_gl_glx_dep  = dependency('gstreamer-gl-x11-1.0')
+gst_pbutils_dep = dependency('gstreamer-pbutils-1.0')
 gst_video_dep   = dependency('gstreamer-video-1.0')
 
 gigst_lib = static_library(
@@ -17,6 +18,7 @@ gigst_lib = static_library(
       , gi_binding_src['gstgl']
       , gi_binding_src['gstglegl']
       , gi_binding_src['gstglx11']
+      , gi_binding_src['gstpbutils']
       , gi_binding_src['gstvideo']
       ]
   , dummy_headers
@@ -33,6 +35,7 @@ gigst_lib = static_library(
       , gst_gl_dep
       , gst_gl_egl_dep
       , gst_gl_glx_dep
+      , gst_pbutils_dep
       , gst_video_dep
       ]
   )
@@ -50,6 +53,7 @@ gigst_dep = declare_dependency(
       , gst_gl_dep
       , gst_gl_egl_dep
       , gst_gl_glx_dep
+      , gst_pbutils_dep
       , gst_video_dep
       ]
   )

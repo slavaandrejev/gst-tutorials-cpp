@@ -20,6 +20,7 @@ gi_gst_binding_names = [
   , 'gstgl'
   , 'gstglegl'
   , 'gstglx11'
+  , 'gstpbutils'
   , 'gstvideo'
   ]
 
@@ -47,7 +48,7 @@ gi_gst_gen = custom_target('gi-gst-gen',
         cppgir
       , '--output', '@OUTDIR@'
       , 'Gst-1.0', 'GstApp-1.0', 'GstAudio-1.0', 'GstBase-1.0', 'GstGL-1.0'
-      , 'GstGLEGL-1.0', 'GstGLX11-1.0', 'GstVideo-1.0'
+      , 'GstGLEGL-1.0', 'GstGLX11-1.0', 'GstVideo-1.0', 'GstPbutils-1.0'
       ]
   )
 

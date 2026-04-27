@@ -15,17 +15,11 @@ int main(int argc, char *argv[]) {
 
     auto main_window = gi::ref_ptr<MainWindow>{};
     app.signal_activate().connect([&](Gio::Application app_) {
-        try {
-            main_window = MainWindow::new_();
+        main_window = MainWindow::new_();
+        if (main_window) {
             app.add_window(*main_window);
             main_window->present();
-        }
-        catch (const GLib::Error& ex) {
-            fmt::print(stderr, "Application::on_activate(): {}\n", ex.what());
-            app_.quit();
-        }
-        catch (const std::exception& ex) {
-            fmt::print(stderr, "Application::on_activate(): {}\n", ex.what());
+        } else {
             app_.quit();
         }
     });

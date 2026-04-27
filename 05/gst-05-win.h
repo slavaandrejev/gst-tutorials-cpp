@@ -23,11 +23,15 @@ namespace Gtk {
 class MainWindow : public Gtk::impl::ApplicationWindowImpl
 {
 public:
-    static gi::ref_ptr<MainWindow> new_();
+    static gi::ref_ptr<MainWindow> new_() noexcept;
 
-    MainWindow(Gtk::ApplicationWindow cobj, Gtk::Builder builder);
+    // Constructors impementing GObject cannot throw exceptions. GLib
+    // requirement is that object construction cannot ever fail.
+    MainWindow(Gtk::ApplicationWindow cobj, Gtk::Builder builder) noexcept;
 
 private:
+    bool create_gst_elements();
+
     void on_realize(Gtk::Widget);
     void on_unrealize(Gtk::Widget);
 
@@ -79,25 +83,9 @@ private:
 
     gint64 duration = Gst::CLOCK_TIME_NONE_;
 
-    Gst::Pipeline playbin{
-        gi::object_cast<Gst::Pipeline>(
-            Gst::ElementFactory::make("playbin", "playbin")
-        )
-    };
-    Gst::GLBaseFilter glupload{
-        gi::object_cast<Gst::GLBaseFilter>(
-            Gst::ElementFactory::make("glupload", "glupload")
-        )
-    };
-    Gst::GLBaseFilter glcolorconvert{
-        gi::object_cast<Gst::GLBaseFilter>(
-            Gst::ElementFactory::make("glcolorconvert", "glcolorconvert")
-        )
-    };
-    Gst::AppSink video_sink{
-        gi::object_cast<Gst::AppSink>(
-            Gst::ElementFactory::make("appsink", "appsink")
-        )
-    };
-    Gst::Bin video_sink_bin{Gst::Bin::new_("video_sink_bin")};
+    Gst::Pipeline     playbin;
+    Gst::GLBaseFilter glupload;
+    Gst::GLBaseFilter glcolorconvert;
+    Gst::AppSink      video_sink;
+    Gst::Bin          video_sink_bin;
 };

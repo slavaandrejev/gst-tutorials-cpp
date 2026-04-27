@@ -9,16 +9,19 @@
 
 using namespace gl;
 
-gi::ref_ptr<MainWindow> MainWindow::new_() {
+gi::ref_ptr<MainWindow> MainWindow::new_() noexcept {
     gi::register_type<VideoRenderer>();
     auto builder = Gtk::Builder::new_();
     if (builder.add_from_resource("/gst-05-win.ui")) {
-        return builder.get_object_derived<MainWindow>("main_window");
+        auto main_window = builder.get_object_derived<MainWindow>("main_window");
+        if (main_window->create_gst_elements()) {
+            return main_window;
+        }
     }
     return gi::ref_ptr<MainWindow>();
 }
 
-MainWindow::MainWindow(Gtk::ApplicationWindow cobj, Gtk::Builder builder)
+MainWindow::MainWindow(Gtk::ApplicationWindow cobj, Gtk::Builder builder) noexcept
   : Gtk::impl::ApplicationWindowImpl(cobj, this)
 {
     gl_area = builder.get_object_derived<VideoRenderer>("video_container");
@@ -49,8 +52,34 @@ MainWindow::MainWindow(Gtk::ApplicationWindow cobj, Gtk::Builder builder)
           , (gint64)(value * Gst::SECOND_)
           );
     });
+}
+
+bool MainWindow::create_gst_elements() {
+    playbin = gi::object_cast<Gst::Pipeline>(
+        Gst::ElementFactory::make("playbin", "playbin")
+      );
+    if (!playbin) { g_critical("playbin wasn't created"); return false; }
+    glupload = gi::object_cast<Gst::GLBaseFilter>(
+        Gst::ElementFactory::make("glupload", "glupload")
+      );
+    if (!glupload) { g_critical("glupload wasn't created"); return false; }
+    glcolorconvert = gi::object_cast<Gst::GLBaseFilter>(
+        Gst::ElementFactory::make("glcolorconvert", "glcolorconvert")
+      );
+    if (!glcolorconvert) { g_critical("glcolorconvert wasn't created"); return false; }
+    video_sink = gi::object_cast<Gst::AppSink>(
+        Gst::ElementFactory::make("appsink", "appsink")
+      );
+    if (!video_sink) { g_critical("video_sink wasn't created"); return false; }
+    video_sink_bin = Gst::Bin::new_("video_sink_bin");
+    if (!video_sink_bin) { g_critical("video_sink_bin wasn't created"); return false; }
 
     playbin.set_property("uri", "https://gstreamer.freedesktop.org/data/media/sintel_trailer-480p.webm");
+
+    auto [ret, cur, pending] = playbin.get_state(Gst::CLOCK_TIME_NONE_);
+    state = cur;
+
+    return true;
 }
 
 // The window is ready to be drawn. It means it has OpenGL context we can pass
@@ -75,16 +104,10 @@ void MainWindow::on_realize(Gtk::Widget) {
     // Fill information from the wrapped GL context.
     gst_gl_context.fill_info();
 
-    g_return_if_fail(playbin);
-    g_return_if_fail(glupload);
-    g_return_if_fail(glcolorconvert);
-    g_return_if_fail(video_sink);
-    g_return_if_fail(video_sink_bin);
-
     video_sink_bin.add(glupload, glcolorconvert, video_sink);
 
     if (!glupload.link(glcolorconvert, video_sink)) {
-        throw std::runtime_error("Elements couldn't be linked");
+        g_critical("Elements couldn't be linked");
     }
     video_sink.set_caps(Gst::Caps::from_string("video/x-raw(memory:GLMemory),format=RGBA"));
     auto sink_pad = Gst::GhostPad::new_("sink", glupload.get_static_pad("sink"));
@@ -138,7 +161,7 @@ void MainWindow::on_realize(Gtk::Widget) {
 
     auto ret = playbin.set_state(Gst::State::PLAYING_);
     if (Gst::StateChangeReturn::FAILURE_ == ret) {
-        throw std::runtime_error("Unable to set the pipeline to the playing state.");
+        g_critical("Unable to set the pipeline to the playing state.");
     }
 
     time_callback_id = GLib::timeout_add(
@@ -183,8 +206,10 @@ void MainWindow::on_error(Gst::Bus, Gst::Message_Ref msg)
     auto dbg  = gi::cstring{};
 
     msg.parse_error(&gerr, &dbg);
-    fmt::print(stderr, "Error received from element {}: {}\n", msg.src_().get_name(), gerr.what());
-    fmt::print(stderr, "Debugging information: {}\n", !dbg.empty() ? dbg.c_str() : "none");
+    auto str = fmt::format("Error received from element {}: {}\n", msg.src_().get_name(), gerr.what());
+    g_warning("%s", str.c_str());
+    str = fmt::format("Debugging information: {}\n", !dbg.empty() ? dbg.c_str() : "none");
+    g_warning("%s", str.c_str());
 
     playbin.set_state(Gst::State::READY_);
 }
@@ -241,7 +266,7 @@ bool MainWindow::refresh_ui() {
     // If we didn't know it yet, query the stream duration
     if (!GST_CLOCK_TIME_IS_VALID(duration)) {
         if (!playbin.query_duration(Gst::Format::TIME_, &duration)) {
-            fmt::print(stderr, "Could not query current duration.\n");
+            g_warning("Could not query current duration.\n");
         } else {
             // Set the range of the slider to the clip duration, in SECONDS
             slider.set_range(0, duration / double(Gst::SECOND_));

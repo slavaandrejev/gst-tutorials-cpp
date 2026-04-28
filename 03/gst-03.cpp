@@ -45,6 +45,7 @@ int main(int argc, char *argv[]) {
         auto new_pad_type   = new_pad_struct.get_name();
         if (!GLib::str_has_suffix(new_pad_type, "audio/x-raw")) {
             fmt::print("It has type '{}' which is not raw audio. Ignoring.\n", new_pad_type);
+            return;
         }
 
         auto ret = new_pad.link(sink_pad);

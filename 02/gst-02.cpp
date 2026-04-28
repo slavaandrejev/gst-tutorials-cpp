@@ -18,8 +18,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    pipeline.add(source);
-    pipeline.add(sink);
+    pipeline.add(source, sink);
 
     if (!source.link(sink)) {
         fmt::print(stderr, "Elements could not be linked.\n");

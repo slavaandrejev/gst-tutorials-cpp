@@ -20,10 +20,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-    pipeline.add(source);
-    pipeline.add(convert);
-    pipeline.add(resample);
-    pipeline.add(sink);
+    pipeline.add(source, convert, resample, sink);
 
     if (!convert.link(resample, sink)) {
         fmt::print(stderr, "Elements could not be linked.\n");

@@ -1,7 +1,11 @@
-cppgir = find_program('cppgir')
+cppgir = find_program('cppgir', required: false)
+if not cppgir.found()
+    subproject('cppgir')
+    cppgir = find_program('cppgir')
+endif
 touch  = find_program('touch')
 
-cppgir_dep    = dependency('cppgir')
+cppgir_dep = dependency('cppgir')
 
 gi_glib_binding_names = [
     'gio'

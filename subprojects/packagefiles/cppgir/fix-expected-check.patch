@@ -1,0 +1,13 @@
+diff --git a/meson.build b/meson.build
+index aefb452..0db7daf 100644
+--- a/meson.build
++++ b/meson.build
+@@ -147,7 +147,7 @@ meson.override_find_program('cppgir', cppgir)
+ expected_code = '''#include <expected>
+ auto f() -> std::expected<int, int> { return 2; }
+ '''
+-has_expected = compiler.compiles(expected_code, name : 'std::expected check')
++has_expected = compiler.compiles(expected_code, name : 'std::expected check', args : ['-std=c++23'])
+ 
+ pkgconfig = import('pkgconfig')
+ 

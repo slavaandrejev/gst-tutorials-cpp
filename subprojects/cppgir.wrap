@@ -2,4 +2,4 @@
 url = https://gitlab.com/mnauw/cppgir.git
 revision = master
 depth = 1
-diff_files = cppgir/fix-expected-check.patch
+

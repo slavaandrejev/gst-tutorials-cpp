@@ -1,6 +1,6 @@
 cppgir = find_program('cppgir', required: false)
 if not cppgir.found()
-    subproject('cppgir')
+    subproject('cppgir', default_options : ['internal_expected=false'])
     cppgir = find_program('cppgir')
 endif
 touch  = find_program('touch')
